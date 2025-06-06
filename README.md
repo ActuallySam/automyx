@@ -52,7 +52,12 @@ JIRA_API_TOKEN=your_jira_api_token
 USER_NAME=Samarth Srivastava
 BB_USERNAME=your_bitbucket_username
 BB_PASS=your_bitbucket_app_password
+REPO_PATH=your_local_directory_path
+JIRA_OPENAPI_URL=https://<your-org>.atlassian.net/rest/api/3/issue
+PR_REVIEWERS=[]
 ```
+
+---
 
 ## 🛠️ Setup & Installation
 
@@ -78,22 +83,27 @@ JIRA_API_TOKEN=your_jira_api_token
 USER_NAME=Samarth Srivastava
 BB_USERNAME=your_bitbucket_username
 BB_PASS=your_bitbucket_app_password
+REPO_PATH=your_local_directory_path
+JIRA_OPENAPI_URL=https://<your-org>.atlassian.net/rest/api/3/issue
+PR_REVIEWERS=[]
 ```
 - Make sure IMAP access is enabled for your Gmail account.
 
+---
 
 ## 🧪 Running the Automation
 
 Once setup is complete, run the script using:
 ```bash
-python automyx.py
+python main.py
 ```
 Ensure you are connected to the internet and have access to Gmail, Bitbucket, and JIRA.
 
+---
 
 ## 📌 Notes
 
 - **Security Tip:** Do not commit your .env file to version control.
 Add it to your .gitignore to keep credentials safe.
 
-Use App Passwords and API Tokens instead of storing raw passwords directly.
+- Use App Passwords and API Tokens instead of storing raw passwords directly.
