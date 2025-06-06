@@ -17,11 +17,10 @@ EMAIL_USER = os.getenv('EMAIL_USER')
 EMAIL_IMAP_PASS = os.getenv('EMAIL_IMAP_PASS')
 JIRA_API_TOKEN = os.getenv('JIRA_API_TOKEN')
 USER_NAME = os.getenv('USER_NAME')
+LOCAL_REPO_PATH = os.getenv('REPO_PATH')
+JIRA_OPEN_API_URL = os.getenv('JIRA_OPENAPI_URL')
+REVIEWERS_LIST = os.getenv('PR_REVIEWERS')
 IMAP_SERVER = 'imap.gmail.com'
-
-# Configuration
-JIRA_OPEN_API_URL = "https://easebuzz.atlassian.net/rest/api/3/issue"
-LOCAL_REPO_PATH = '/home/samarth.srivastava/work/dashboard/'
 
 def get_time_frame():
     today = datetime.today()
@@ -77,19 +76,6 @@ def fetch_target_email():
 
 def extract_merchant_ids(text):
     return re.findall(r'\b\d{5,6}\b', text)
-
-# def create_jira_ticket(subject, body):
-#     print("Creating JIRA ticket...")
-#     if not JIRA_API_TOKEN:
-#         raise ValueError("Please set JIRA_API_TOKEN in your .env file.")
-#     jira = JIRA(JIRA_URL, basic_auth=(JIRA_USER, JIRA_API_TOKEN))
-#     issue = jira.create_issue(
-#         project=JIRA_PROJECT_KEY,
-#         summary=subject,
-#         description=body,
-#         issuetype={'name': 'Task'}
-#     )
-#     return issue.key  # Typically "PG-XXXXXX"
 
 def create_jira_ticket(mids_found):
     print("Creating JIRA ticket...")
@@ -154,7 +140,7 @@ def create_bitbucket_pr(
         "source": {"branch": {"name": branch_name}},
         "destination": {"branch": {"name": target_branch}},
         "description": f"Automated PR created for {jira_id}",
-        "reviewers": ["90f8c444-83f0-4842-b8e6-47a293ecff17", "f6f1d470-ba9f-441a-94fc-ec6c6bd4d2a0", "26be14cb-d343-492c-981a-9f1aa6d99037"],  # Add reviewer UUIDs if required
+        "reviewers": REVIEWERS_LIST,  # Add reviewer UUIDs if required
         "close_source_branch": True
     }
 
@@ -182,7 +168,7 @@ def main():
         print(f"Merchant IDs: {', '.join(mids_found)}")
 
         #* Exclude certain subject lines
-        # if subject in set(["Re: Bajaj Finance: Enable bulk refund on Dashboard"]):
+        # if subject in set([]):
         #     print(f"Skipping email with subject: {subject}")
         #     continue
 
