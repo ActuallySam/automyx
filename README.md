@@ -39,6 +39,9 @@ Create a `.env` file in the root directory and add the following keys with their
 | `USER_NAME`      | Your full name. E.g. `Samarth Srivastava`                                   |
 | `BB_USERNAME`    | Your Bitbucket username                                                      |
 | `BB_PASS`        | Your Bitbucket App Password (Token). Use the same token you use for git pulls |
+| `REPO_PATH`        | Your Bitbucket App Password (Token). Use the same token you use for git pulls |
+| `JIRA_OPENAPI_URL`        | Organization's Atlassian URL E.g: https://<your-org-name>.atlassian.net/rest/api/3/issue |
+| `PR_REVIEWERS`        | List of UUID's of users you want to review your PR |
 
 ### Example `.env` file
 
