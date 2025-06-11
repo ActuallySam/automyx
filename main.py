@@ -22,6 +22,7 @@ LOCAL_REPO_PATH = os.getenv('REPO_PATH')
 JIRA_OPEN_API_URL = os.getenv('JIRA_OPENAPI_URL')
 REVIEWERS_LIST = os.getenv('PR_REVIEWERS')
 GOOGLE_SPACES_WEBHOOK_URL = os.getenv('GOOGLE_SPACES_WEBHOOK_URL')
+REPO_SLUG = os.getenv('REPO_SLUG')
 
 def get_time_frame():
     today = datetime.today()
@@ -199,11 +200,11 @@ def main():
         new_branch = handle_git_branch(ticket_id)
         print(f"Switched to new Git branch: {new_branch}")
 
-        time.sleep(7)
+        time.sleep(3)
 
         # Raise a PR to merge on master
         pr_url = create_bitbucket_pr(
-            repo_slug="dashboard",
+            repo_slug=REPO_SLUG,
             branch_name=ticket_id,
             jira_id=ticket_id
         )
