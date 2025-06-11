@@ -48,17 +48,6 @@ CREATE_TICKET_CONFIG = {
             "timeZone": "Asia/Calcutta",
             "accountType": "atlassian"
         },
-        "customfield_10020":[
-            {
-                "id":1227,
-                "name":"PG Dasbhoard 44 | W01M06Y2025",
-                "state":"active",
-                "boardId":27,
-                "goal":"",
-                "startDate":"2025-06-03T23:57:48.141Z",
-                "endDate":"2025-06-16T18:30:00.000Z"
-            }
-        ],
         "customfield_10170": {
             "self": "https://easebuzz.atlassian.net/rest/api/3/customFieldOption/10168",
             "value": "Medium",

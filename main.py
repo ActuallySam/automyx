@@ -1,6 +1,7 @@
 import imaplib
 import email
 import re
+import time
 import os
 import subprocess
 from datetime import datetime, timedelta
@@ -20,7 +21,7 @@ USER_NAME = os.getenv('USER_NAME')
 LOCAL_REPO_PATH = os.getenv('REPO_PATH')
 JIRA_OPEN_API_URL = os.getenv('JIRA_OPENAPI_URL')
 REVIEWERS_LIST = os.getenv('PR_REVIEWERS')
-IMAP_SERVER = 'imap.gmail.com'
+GOOGLE_SPACES_WEBHOOK_URL = os.getenv('GOOGLE_SPACES_WEBHOOK_URL')
 
 def get_time_frame():
     today = datetime.today()
@@ -28,11 +29,11 @@ def get_time_frame():
     tomorrow = today + timedelta(days=1)
 
     since = yesterday.strftime("%d-%b-%Y")  # e.g., '05-Jun-2025'
-    until = today.strftime("%d-%b-%Y")  # e.g., '06-Jun-2025'
+    until = tomorrow.strftime("%d-%b-%Y")  # e.g., '06-Jun-2025'
     return since, until
 
 def fetch_target_email():
-    mail = imaplib.IMAP4_SSL(IMAP_SERVER)
+    mail = imaplib.IMAP4_SSL('imap.gmail.com')
     mail.login(EMAIL_USER, EMAIL_IMAP_PASS)
     mail.select("inbox")
 
@@ -100,9 +101,14 @@ def create_jira_ticket(mids_found):
         headers=headers,
         auth=auth
     )
-    ticket_id = response.json()['key']
-    print(f"JIRA Ticket Link: https://easebuzz.atlassian.net/browse/{ticket_id}")
-    return ticket_id
+    try:
+        ticket_id = response.json()['key']
+    except Exception:
+        raise ValueError("Creation of JIRA Ticket failed with following exception: ", response.json())
+
+    ticket_url = f"https://easebuzz.atlassian.net/browse/{ticket_id}"
+    print(f"JIRA Ticket Link: {ticket_url}")
+    return ticket_id, ticket_url
 
 def handle_git_branch(ticket_id):
     repo = Repo(LOCAL_REPO_PATH)
@@ -140,7 +146,7 @@ def create_bitbucket_pr(
         "source": {"branch": {"name": branch_name}},
         "destination": {"branch": {"name": target_branch}},
         "description": f"Automated PR created for {jira_id}",
-        "reviewers": REVIEWERS_LIST,  # Add reviewer UUIDs if required
+        # "reviewers": REVIEWERS_LIST,  # Add reviewer UUIDs if required
         "close_source_branch": True
     }
 
@@ -183,7 +189,7 @@ def main():
             continue
 
         # Create JIRA Ticket
-        ticket_id = create_jira_ticket(', '.join(mids_found))
+        ticket_id, ticket_url = create_jira_ticket(', '.join(mids_found))
         print(f"Created JIRA Ticket: {ticket_id}")
 
         # Open VSCode
@@ -193,12 +199,18 @@ def main():
         new_branch = handle_git_branch(ticket_id)
         print(f"Switched to new Git branch: {new_branch}")
 
+        time.sleep(7)
+
         # Raise a PR to merge on master
-        create_bitbucket_pr(
+        pr_url = create_bitbucket_pr(
             repo_slug="dashboard",
             branch_name=ticket_id,
             jira_id=ticket_id
         )
+
+        # Send update on Google Chat
+        message = {"text": f"SUCCESS for Bulk-Refund Automation: \n Tix: {ticket_url} \n BE PR: {pr_url}"}
+        requests.post(GOOGLE_SPACES_WEBHOOK_URL, data=json.dumps(message), headers={'Content-Type': 'application/json'})
 
 if __name__ == "__main__":
     main()
