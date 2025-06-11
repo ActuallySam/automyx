@@ -146,7 +146,7 @@ def create_bitbucket_pr(
         "source": {"branch": {"name": branch_name}},
         "destination": {"branch": {"name": target_branch}},
         "description": f"Automated PR created for {jira_id}",
-        # "reviewers": REVIEWERS_LIST,  # Add reviewer UUIDs if required
+        "reviewers": REVIEWERS_LIST,  # Add reviewer UUIDs if required
         "close_source_branch": True
     }
 
