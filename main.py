@@ -28,7 +28,7 @@ def get_time_frame():
     yesterday = today - timedelta(days=1)
     tomorrow = today + timedelta(days=1)
 
-    since = yesterday.strftime("%d-%b-%Y")  # e.g., '05-Jun-2025'
+    since = yesterday.strftime("%d-%b-%Y")  # e.g., '04-Jun-2025'
     until = tomorrow.strftime("%d-%b-%Y")  # e.g., '06-Jun-2025'
     return since, until
 
@@ -151,13 +151,13 @@ def create_bitbucket_pr(
     }
 
     response = requests.post(url, auth=(os.getenv("BB_USERNAME"), os.getenv("BB_PASS")), json=data, headers=headers)
-    print(response.__dict__)
-    repo_link = response.json().get('links').get('html').get('href')
-    if response.status_code in [200, 201]:
+    if response.status_code == 200:
+        repo_link = response.json().get('links').get('html').get('href')
         print(f"✅ Pull Request created: {repo_link}")
+        return repo_link
     else:
         print("❌ Failed to create PR:", response.text)
-    return repo_link
+        return None
 
 def main():
     matched_mails = fetch_target_email()
