@@ -105,10 +105,10 @@ def create_jira_ticket(mids_found):
     try:
         ticket_id = response.json()['key']
     except Exception:
-        raise ValueError("Creation of JIRA Ticket failed with following exception: ", response.json())
+        raise ValueError("❌ Creation of JIRA Ticket failed with following exception: ", response.json())
 
     ticket_url = f"https://easebuzz.atlassian.net/browse/{ticket_id}"
-    print(f"JIRA Ticket Link: {ticket_url}")
+    print(f"✅ Created JIRA Ticket! Link: {ticket_url}")
     return ticket_id, ticket_url
 
 def handle_git_branch(ticket_id):
@@ -129,6 +129,7 @@ def handle_git_branch(ticket_id):
 
     # Push the new branch to remote
     git.push('--set-upstream', 'origin', new_branch)
+    print(f"✅ Switched to new Git branch: {new_branch}")
     return new_branch
 
 def open_vscode():
@@ -191,14 +192,12 @@ def main():
 
         # Create JIRA Ticket
         ticket_id, ticket_url = create_jira_ticket(', '.join(mids_found))
-        print(f"Created JIRA Ticket: {ticket_id}")
 
         # Open VSCode
         open_vscode()
 
         # Create and push a new branch
-        new_branch = handle_git_branch(ticket_id)
-        print(f"Switched to new Git branch: {new_branch}")
+        handle_git_branch(ticket_id)
 
         time.sleep(3)
 
