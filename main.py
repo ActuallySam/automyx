@@ -175,6 +175,11 @@ def main():
         mids_found = list(set(mids_found))
         print(f"Merchant IDs: {', '.join(mids_found)}")
 
+        # Check if any Merchant IDs were found
+        if not mids_found:
+            print(f"No Merchant IDs found in email: {subject}")
+            continue
+
         #* Exclude certain subject lines
         # if subject in set([]):
         #     print(f"Skipping email with subject: {subject}")
@@ -184,11 +189,6 @@ def main():
         if subject in duplicate_mail_subject: 
             continue
         duplicate_mail_subject.append(subject)
-
-        # Check if any Merchant IDs were found
-        if not mids_found:
-            print(f"No Merchant IDs found in email: {subject}")
-            continue
 
         # Create JIRA Ticket
         ticket_id, ticket_url = create_jira_ticket(', '.join(mids_found))
